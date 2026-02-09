@@ -50,9 +50,11 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
     }
 
     private void toggleStrikeThrough(TextView tv, boolean isDone) {
-        if (isDone) {
+        if (isDone)
+        {
             tv.setPaintFlags(tv.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-        } else {
+        } else
+        {
             tv.setPaintFlags(tv.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
         }
     }
