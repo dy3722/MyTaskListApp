@@ -1,9 +1,11 @@
 package com.example.mytasklistapp;
 
+import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -27,13 +29,32 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         Task currentTask = tasks.get(position);
 
         holder.tvTitle.setText(currentTask.getTitle());
+        toggleStrikeThrough(holder.tvTitle, currentTask.isDone());
 
         holder.cbDone.setOnCheckedChangeListener(null);
         holder.cbDone.setChecked(currentTask.isDone());
-
         holder.cbDone.setOnCheckedChangeListener((buttonView, isChecked) -> {
             currentTask.setDone(isChecked);
+            toggleStrikeThrough(holder.tvTitle, isChecked);
         });
+
+        holder.btnDelete.setOnClickListener(v -> {
+            int currentPos = holder.getAdapterPosition();
+
+            if (currentPos != RecyclerView.NO_POSITION) {
+                tasks.remove(currentPos);
+                notifyItemRemoved(currentPos);
+                notifyItemRangeChanged(currentPos, tasks.size());
+            }
+        });
+    }
+
+    private void toggleStrikeThrough(TextView tv, boolean isDone) {
+        if (isDone) {
+            tv.setPaintFlags(tv.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        } else {
+            tv.setPaintFlags(tv.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
+        }
     }
 
     @Override
@@ -42,11 +63,13 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
     public static class TaskViewHolder extends RecyclerView.ViewHolder {
         TextView tvTitle;
         CheckBox cbDone;
+        ImageButton btnDelete;
 
         public TaskViewHolder(@NonNull View itemView) {
             super(itemView);
             tvTitle = itemView.findViewById(R.id.tvTaskTitle);
             cbDone = itemView.findViewById(R.id.cbDone);
+            btnDelete = itemView.findViewById(R.id.btnDelete);
         }
     }
 }
